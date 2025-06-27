@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CitySearchCubit>(
-          create: (context) => CitySearchCubit(),
+        BlocProvider<CitySearchBloc>(
+          create: (context) => CitySearchBloc(),
           child: Container(),
         ),
         BlocProvider<WeatherDetailCubit>(
