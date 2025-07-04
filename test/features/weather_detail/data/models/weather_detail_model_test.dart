@@ -16,13 +16,11 @@ void main() {
 
     final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
-    // ✅ Deserialize
     final weatherDetail = WeatherDetail.fromJson(jsonMap);
     expect(weatherDetail.currentWeather.temperature, 32.5);
     expect(weatherDetail.currentWeather.time, "2025-07-04T10:00");
     expect(weatherDetail.currentWeather.weatherCode, 2);
 
-    // ✅ Serialize
     final currentWeatherJson = weatherDetail.currentWeather.toJson();
 
     expect(currentWeatherJson['temperature'], 32.5);
