@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_bloc_app/features/search_city/city_serch_bloc/city_search_bloc.dart';
+import 'package:weather_bloc_app/features/search_city/city_serch_bloc/city_search_event.dart';
 import 'package:weather_bloc_app/features/search_city/city_serch_bloc/city_search_state.dart';
 import 'package:weather_bloc_app/features/search_city/data/models/city_search_model.dart';
 import 'package:weather_bloc_app/features/weather_detail/ui/weather_detail_page.dart';
@@ -26,19 +27,17 @@ class _SearchCityPageState extends State<SearchCityPage> {
           children: [
             TextField(
               controller: _searchController,
+              onChanged: (_) {
+                _searchCity();
+              },
               decoration: InputDecoration(
                 hintText: 'Search City',
                 border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    _searchCity();
-                  },
-                  icon: Icon(Icons.search),
-                ),
+                suffixIcon: Icon(Icons.search),
               ),
             ),
             Expanded(
-              child: BlocBuilder<CitySearchCubit, CitySearchState>(
+              child: BlocBuilder<CitySearchBloc, CitySearchState>(
                 builder: (context, state) {
                   return switch (state) {
                     CitySearchLoading() => Center(
@@ -121,7 +120,8 @@ class _SearchCityPageState extends State<SearchCityPage> {
   void _searchCity() {
     String city = _searchController.text.trim();
     if (city.isNotEmpty) {
-      BlocProvider.of<CitySearchCubit>(context).search(city);
+      BlocProvider.of<CitySearchBloc>(context)
+          .add(CitySearchRequestedEvent(city));
     }
   }
 }
