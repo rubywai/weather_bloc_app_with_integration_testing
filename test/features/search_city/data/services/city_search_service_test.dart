@@ -21,37 +21,39 @@ void main() {
     service = CitySearchService(mockDio);
   });
 
-  test('should construct CitySearchService', () {
-    final dio = Dio();
-    final instance = CitySearchService(dio);
-    expect(instance, isA<CitySearchService>());
-  });
+  group('api service test', () {
+    test('should construct CitySearchService', () {
+      final dio = Dio();
+      final instance = CitySearchService(dio);
+      expect(instance, isA<CitySearchService>());
+    });
 
-  test('searchCity should return parsed CityModel', () async {
-    final responseJson = {
-      "results": [
-        {
-          "id": 1,
-          "name": "Singapore",
-          "latitude": 1.3521,
-          "longitude": 103.8198,
-          "country": "SG"
-        }
-      ]
-    };
+    test('searchCity should return parsed CityModel', () async {
+      final responseJson = {
+        "results": [
+          {
+            "id": 1,
+            "name": "Singapore",
+            "latitude": 1.3521,
+            "longitude": 103.8198,
+            "country": "SG"
+          }
+        ]
+      };
 
-    final response = Response<Map<String, dynamic>>(
-      requestOptions: RequestOptions(path: ''),
-      data: responseJson,
-      statusCode: 200,
-    );
+      final response = Response<Map<String, dynamic>>(
+        requestOptions: RequestOptions(path: ''),
+        data: responseJson,
+        statusCode: 200,
+      );
 
-    when(() => mockDio.fetch<Map<String, dynamic>>(any()))
-        .thenAnswer((_) async => response);
+      when(() => mockDio.fetch<Map<String, dynamic>>(any()))
+          .thenAnswer((_) async => response);
 
-    final result = await service.searchCity(name: "Singapore", count: 10);
+      final result = await service.searchCity(name: "Singapore", count: 10);
 
-    final jsonList = result.results!.map((e) => e.toJson()).toList();
-    expect(jsonList, equals(responseJson['results']));
+      final jsonList = result.results!.map((e) => e.toJson()).toList();
+      expect(jsonList, equals(responseJson['results']));
+    });
   });
 }

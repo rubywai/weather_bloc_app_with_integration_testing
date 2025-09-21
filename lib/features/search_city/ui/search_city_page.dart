@@ -6,6 +6,9 @@ import 'package:weather_bloc_app/features/search_city/city_serch_bloc/city_searc
 import 'package:weather_bloc_app/features/search_city/data/models/city_search_model.dart';
 import 'package:weather_bloc_app/features/weather_detail/ui/weather_detail_page.dart';
 
+//print
+//debugPrint
+//log
 class SearchCityPage extends StatefulWidget {
   const SearchCityPage({super.key});
 
@@ -28,6 +31,7 @@ class _SearchCityPageState extends State<SearchCityPage> {
             TextField(
               controller: _searchController,
               onChanged: (_) {
+                debugPrint("city is ${_searchController.text}");
                 _searchCity();
               },
               decoration: InputDecoration(
@@ -70,7 +74,16 @@ class _SearchCityPageState extends State<SearchCityPage> {
                             ),
                             TextButton(
                               onPressed: () {
-                                _searchCity();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => WeatherDetailPage(
+                                      name: "good",
+                                      latitude: 0.76755,
+                                      longitude: 24.43973,
+                                    ),
+                                  ),
+                                );
                               },
                               child: Text("Try Again"),
                             ),

@@ -57,6 +57,7 @@ void main() {
 
       expect(find.text('Something wrong'), findsOneWidget);
       expect(find.text('Try Again'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
     testWidgets('triggers search on text input', (tester) async {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_bloc_app/features/search_city/city_serch_bloc/city_search_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:weather_bloc_app/locator/locator.dart';
 import 'features/search_city/ui/search_city_page.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await setUpLocator();
   runApp(const MyApp());
 }
@@ -16,6 +18,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (kReleaseMode) {
+      debugPrint = (String? message, {int? wrapWidth}) {};
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<CitySearchBloc>(
