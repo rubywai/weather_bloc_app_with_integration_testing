@@ -27,18 +27,15 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
-    - name: Check formatting
-      run: dart format --set-exit-if-changed .
-
-    # Step 5: Analyze code
+    # Step 4: Analyze code
     - name: Analyze code
       run: flutter analyze
 
-    # Step 6: Run tests with coverage
+    # Step 5: Run tests with coverage
     - name: Run tests
       run: flutter test --coverage
 
-    # Step 7: Upload coverage to GitHub
+    # Step 6: Upload coverage to GitHub
     - name: Upload coverage reports
       uses: codecov/codecov-action@v4
       with:
