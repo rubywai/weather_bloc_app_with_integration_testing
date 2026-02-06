@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+# When this workflow runs
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Cache Flutter SDK
+    - name: Cache Flutter SDK
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/hostedtoolcache/flutter
+        key: flutter-${{ runner.os }}-3.38.9
+        restore-keys: |
+          flutter-${{ runner.os }}-
+
+    # Step 3: Setup Flutter
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.38.9'
+        channel: 'stable'
+        cache: true
+
+    # Step 4: Cache pub dependencies
+    - name: Cache pub dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.pub-cache
+        key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pub-
+
+    # Step 5: Get dependencies
+    - name: Install dependencies
+      run: flutter pub get
+
+    # Step 6: Run unit and widget tests with coverage
+    - name: Run tests
+      run: flutter test --coverage
+
+    # Step 7: Generate coverage report summary
+    - name: Coverage Report
+      run: |
+        echo "Coverage report generated at coverage/lcov.info"
+        if [ -f coverage/lcov.info ]; then
+          echo "✅ Coverage file exists"
+          # You can view detailed coverage by downloading the coverage folder from artifacts
+          echo "Coverage data saved for review"
+        else
+          echo "❌ Coverage file not found"
+        fi
+
+    # Step 8: Upload coverage artifacts (free GitHub feature)
+    - name: Upload coverage artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/
+        retention-days: 30

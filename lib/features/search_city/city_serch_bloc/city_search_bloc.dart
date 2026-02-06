@@ -1,21 +1,35 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../data/models/city_search_model.dart';
 import '../data/services/city_search_service.dart';
+import 'city_search_event.dart';
 import 'city_search_state.dart';
 
-class CitySearchCubit extends Cubit<CitySearchState> {
-  CitySearchCubit() : super(CitySearchFormSate());
+class CitySearchBloc extends Bloc<CitySearchEvent, CitySearchState> {
   final CitySearchService _service = GetIt.I.get();
-  void search(String name) async {
+  CitySearchBloc() : super(CitySearchFormSate()) {
+    on<CitySearchRequestedEvent>(
+      _searchCity,
+      transformer: (events, mapper) {
+        return events
+            .debounceTime(
+              Duration(milliseconds: 500),
+            )
+            .switchMap(mapper);
+      },
+    );
+  }
+  void _searchCity(
+      CitySearchRequestedEvent event, Emitter<CitySearchState> emitter) async {
     try {
-      emit(CitySearchLoading());
-      CityModel cityModel = await _service.searchCity(name: name, count: 15);
-      emit(CitySearchSuccess(cityModel: cityModel));
+      emitter(CitySearchLoading());
+      CityModel cityModel =
+          await _service.searchCity(name: event.city, count: 15);
+      emitter(CitySearchSuccess(cityModel: cityModel));
     } catch (e) {
-      print("api error $e");
-      emit(CitySearchFailed(errorMessage: "Failed to Load"));
+      emitter(CitySearchFailed(errorMessage: "Failed to load"));
     }
   }
 }
